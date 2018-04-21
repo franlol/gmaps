@@ -1,21 +1,25 @@
-var initMap = function() {
+var gMaps = function(window, undefined) {
   var _infoWindow = [];
-
-  var _barcelona = {
-    lat: 41.390205,
-    lng: 2.154007
-  };
+  var _markers = [];
 
   var _options = {
     zoom: 13,
-    center: _barcelona
+    center: {
+      lat: 41.390205, //Barcelona city
+      lng: 2.154007
+    }
   };
 
-  var _map =  {
+  var _map = {
     map: new google.maps.Map(document.getElementById("gmaps"), _options)
   };
 
   var _fillMarcadors = function(districtes) {
+    _markers.forEach(function(m) {
+      m.setMap(null);
+    });
+    _markers = [];
+
     districtes.forEach(function(districte) {
 
       var marker = new google.maps.Marker({
@@ -33,18 +37,18 @@ var initMap = function() {
           _infoWindow[0].close();
           _infoWindow.splice(0, 1);
         }
-        infowindow.open(_map.map, marker)
+        infowindow.open(_map.map, this)
         _infoWindow.push(infowindow);
       });
-
+      _markers.push(marker);
     });
   }
 
   return {
-    _map,
+    init: _map,
     fill: _fillMarcadors
   }
-}
+}(window);
 
 function createElement(Equipament, Titularitat, Espectadors) {
 
