@@ -1,0 +1,71 @@
+var initMap = function() {
+  var _infoWindow = [];
+
+  var _barcelona = {
+    lat: 41.390205,
+    lng: 2.154007
+  };
+
+  var _options = {
+    zoom: 13,
+    center: _barcelona
+  };
+
+  var _map =  {
+    map: new google.maps.Map(document.getElementById("gmaps"), _options)
+  };
+
+  var _fillMarcadors = function(districtes) {
+    districtes.forEach(function(districte) {
+
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(parseFloat(districte.Latitud), parseFloat(districte.Longitud)),
+        map: _map.map,
+        title: districte.Equipament
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: createElement(districte.Equipament, districte.Titularitat, districte.Espectadors)
+      });
+
+      marker.addListener("click", function() {
+        if (_infoWindow[0] != undefined) {
+          _infoWindow[0].close();
+          _infoWindow.splice(0, 1);
+        }
+        infowindow.open(_map.map, marker)
+        _infoWindow.push(infowindow);
+      });
+
+    });
+  }
+
+  return {
+    _map,
+    fill: _fillMarcadors
+  }
+}
+
+function createElement(Equipament, Titularitat, Espectadors) {
+
+  var element = document.createElement("div");
+  var h3 = document.createElement("h3");
+  var pTitularitat = document.createElement("p");
+  var pEspectadors = document.createElement("p");
+
+
+
+  var Equipament = document.createTextNode(Equipament);
+  var Titularitat = document.createTextNode("Titularitat: " + Titularitat);
+  var Espectadors = document.createTextNode(Espectadors + " espectadors aquest any");
+
+  h3.appendChild(Equipament);
+  pTitularitat.appendChild(Titularitat);
+  pEspectadors.appendChild(Espectadors);
+
+  element.appendChild(h3);
+  element.appendChild(pTitularitat);
+  element.appendChild(pEspectadors);
+
+  return element;
+}
